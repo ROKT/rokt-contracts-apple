@@ -1,0 +1,62 @@
+name: Pull Request
+
+permissions:
+  contents: read
+  pull-requests: read
+  id-token: write
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  trunk-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Trunk Check
+        uses: trunk-io/trunk-action@75699af9e26881e564e9d832ef7dc3af25ec031b # v1.2.4
+        with:
+          check-mode: all
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Build
+        run: swift build
+
+      - name: Run unit tests
+        run: swift test --enable-code-coverage
+
+      - name: Export coverage
+        if: always()
+        run: |
+          BIN_PATH=$(swift build --show-bin-path)
+          xcrun llvm-cov export \
+            "${BIN_PATH}/RoktContractsPackageTests.xctest" \
+            -instr-profile "$(find .build -name 'default.profdata' -type f)" \
+            -format lcov > coverage.lcov 2>/dev/null || true
+
+      - name: Upload coverage
+        if: always()
+        uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad # v5.5.3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.lcov
+          fail_ci_if_error: false
+
+  podspec-lint:
+    runs-on: macos-15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Lint podspec
+        run: pod lib lint RoktContracts.podspec --allow-warnings --verbose
