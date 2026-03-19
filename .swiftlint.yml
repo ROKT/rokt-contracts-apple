@@ -7,7 +7,6 @@ disabled_rules:
   - type_body_length
   - cyclomatic_complexity
   - function_body_length
-  - opening_brace
 
 nesting:
   type_level:
@@ -27,4 +26,3 @@ type_name:
 excluded:
   - Tests
   - .build
-  - .trunk

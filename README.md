@@ -43,7 +43,7 @@ pod install
 
 ### Events
 
-`RoktEvent` is the base class for all events emitted during the Rokt placement lifecycle. All 13 event subclasses use `@objc` annotations for Objective-C interoperability.
+`RoktEvent` is the base class for all events emitted during the Rokt placement lifecycle. All 14 event subclasses use `@objc` annotations for Objective-C interoperability.
 
 | Event                               | Description                                               |
 | ----------------------------------- | --------------------------------------------------------- |
@@ -60,6 +60,7 @@ pod install
 | `RoktEvent.FirstPositiveEngagement` | First positive engagement (includes fulfillment callback) |
 | `RoktEvent.OpenUrl`                 | User pressed a URL for partner app handling               |
 | `RoktEvent.CartItemInstantPurchase` | Purchase made through Shoppable Ads                       |
+| `RoktEvent.EmbeddedSizeChanged`     | Embedded placement height changed                         |
 
 #### Usage
 
@@ -72,6 +73,8 @@ onEvent: { event in
         print("Init: \(e.success)")
     case let e as RoktEvent.PlacementReady:
         print("Ready: \(e.placementId ?? "")")
+    case let e as RoktEvent.EmbeddedSizeChanged:
+        print("Height: \(e.updatedHeight)")
     case let e as RoktEvent.CartItemInstantPurchase:
         print("Purchase: \(e.name ?? "") \(e.totalPrice ?? 0) \(e.currency)")
     default:
@@ -130,7 +133,7 @@ Supporting value types: `PaymentMethodType`, `PaymentItem`, `PaymentResult`, `Pa
 ```text
 Sources/RoktContracts/
 ├── Events/
-│   └── RoktEvent.swift             13 event subclasses
+│   └── RoktEvent.swift             14 event subclasses
 ├── Config/
 │   └── RoktConfig.swift            RoktConfig + RoktColorMode
 ├── Views/

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RoktEvent` base class with 13 event subclasses for placement lifecycle and user interactions
 - `RoktConfig` for placement configuration (color mode, caching)
 - `RoktColorMode` enum (light, dark, system)
+- `RoktEventCallback` for placement lifecycle callbacks
 - `RoktEmbeddedView` for inline embedded placements (iOS/tvOS)
 - `RoktPlacementOptions` for internal SDK-Kit performance tracking
 - `PaymentExtension` protocol for Shoppable Ads payment integrations
