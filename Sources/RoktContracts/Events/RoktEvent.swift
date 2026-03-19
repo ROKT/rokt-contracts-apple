@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 
 /// Base class for all Rokt SDK events shared across the ecosystem.
@@ -171,9 +172,10 @@ public class RoktEvent: NSObject {
         /// Callback to set fulfillment attributes after the engagement.
         @objc public var setFulfillmentAttributes: (([String: String]) -> Void)?
 
-        @objc public init(placementId: String?,
-                          setFulfillmentAttributes: (([String: String]) -> Void)? = nil)
-        {
+        @objc public init(
+            placementId: String?,
+            setFulfillmentAttributes: (([String: String]) -> Void)? = nil
+        ) {
             self.placementId = placementId
             self.setFulfillmentAttributes = setFulfillmentAttributes
             super.init()
@@ -191,6 +193,26 @@ public class RoktEvent: NSObject {
         @objc public init(placementId: String?, url: String) {
             self.placementId = placementId
             self.url = url
+            super.init()
+        }
+    }
+
+    // MARK: - Embedded View Events
+
+    /// Emitted when the height of an embedded placement changes.
+    /// Use this to dynamically adjust the container view's height.
+    ///
+    /// - Note: This event is only emitted for embedded placements.
+    @objc(RoktEmbeddedSizeChanged)
+    public class EmbeddedSizeChanged: RoktEvent {
+        /// The identifier of the placement whose height changed.
+        @objc public let placementId: String
+        /// The new height of the placement in points.
+        @objc public let updatedHeight: CGFloat
+
+        @objc public init(placementId: String, updatedHeight: CGFloat) {
+            self.placementId = placementId
+            self.updatedHeight = updatedHeight
             super.init()
         }
     }

@@ -101,6 +101,13 @@ final class RoktEventTests: XCTestCase {
         XCTAssertEqual(event.unitPrice, NSDecimalNumber(string: "19.99"))
     }
 
+    func testEmbeddedSizeChanged() {
+        let event = RoktEvent.EmbeddedSizeChanged(placementId: "embed-1", updatedHeight: 250.5)
+        XCTAssertEqual(event.placementId, "embed-1")
+        XCTAssertEqual(event.updatedHeight, 250.5)
+        XCTAssertTrue(event is RoktEvent)
+    }
+
     func testShowHideLoadingIndicators() {
         let show = RoktEvent.ShowLoadingIndicator()
         let hide = RoktEvent.HideLoadingIndicator()
@@ -127,7 +134,8 @@ final class RoktEventTests: XCTestCase {
                 currency: "USD", description: "", linkedProductId: nil,
                 providerData: "", quantity: nil, totalPrice: nil, unitPrice: nil
             ),
+            RoktEvent.EmbeddedSizeChanged(placementId: "p", updatedHeight: 100),
         ]
-        XCTAssertEqual(events.count, 13)
+        XCTAssertEqual(events.count, 14)
     }
 }
