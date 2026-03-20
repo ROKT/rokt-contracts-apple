@@ -33,7 +33,7 @@ import Foundation
 /// onEvent: { event in
 ///     switch event {
 ///     case let e as RoktEvent.PlacementReady:
-///         print("Ready: \(e.placementId ?? "")")
+///         print("Ready: \(e.identifier ?? "")")
 ///     case let e as RoktEvent.CartItemInstantPurchase:
 ///         print("Purchase: \(e.name ?? "") \(e.totalPrice ?? 0) \(e.currency)")
 ///     default:
@@ -79,10 +79,10 @@ public class RoktEvent: NSObject {
     @objc(RoktPlacementReady)
     public class PlacementReady: RoktEvent {
         /// The identifier of the placement.
-        @objc public let placementId: String?
+        @objc public let identifier: String?
 
-        @objc public init(placementId: String?) {
-            self.placementId = placementId
+        @objc public init(identifier: String?) {
+            self.identifier = identifier
             super.init()
         }
     }
@@ -91,10 +91,10 @@ public class RoktEvent: NSObject {
     @objc(RoktPlacementInteractive)
     public class PlacementInteractive: RoktEvent {
         /// The identifier of the placement.
-        @objc public let placementId: String?
+        @objc public let identifier: String?
 
-        @objc public init(placementId: String?) {
-            self.placementId = placementId
+        @objc public init(identifier: String?) {
+            self.identifier = identifier
             super.init()
         }
     }
@@ -103,10 +103,10 @@ public class RoktEvent: NSObject {
     @objc(RoktPlacementClosed)
     public class PlacementClosed: RoktEvent {
         /// The identifier of the placement.
-        @objc public let placementId: String?
+        @objc public let identifier: String?
 
-        @objc public init(placementId: String?) {
-            self.placementId = placementId
+        @objc public init(identifier: String?) {
+            self.identifier = identifier
             super.init()
         }
     }
@@ -116,10 +116,10 @@ public class RoktEvent: NSObject {
     @objc(RoktPlacementCompleted)
     public class PlacementCompleted: RoktEvent {
         /// The identifier of the placement.
-        @objc public let placementId: String?
+        @objc public let identifier: String?
 
-        @objc public init(placementId: String?) {
-            self.placementId = placementId
+        @objc public init(identifier: String?) {
+            self.identifier = identifier
             super.init()
         }
     }
@@ -128,10 +128,10 @@ public class RoktEvent: NSObject {
     @objc(RoktPlacementFailure)
     public class PlacementFailure: RoktEvent {
         /// The identifier of the placement, if available.
-        @objc public let placementId: String?
+        @objc public let identifier: String?
 
-        @objc public init(placementId: String?) {
-            self.placementId = placementId
+        @objc public init(identifier: String?) {
+            self.identifier = identifier
             super.init()
         }
     }
@@ -142,10 +142,10 @@ public class RoktEvent: NSObject {
     @objc(RoktOfferEngagement)
     public class OfferEngagement: RoktEvent {
         /// The identifier of the placement.
-        @objc public let placementId: String?
+        @objc public let identifier: String?
 
-        @objc public init(placementId: String?) {
-            self.placementId = placementId
+        @objc public init(identifier: String?) {
+            self.identifier = identifier
             super.init()
         }
     }
@@ -154,10 +154,10 @@ public class RoktEvent: NSObject {
     @objc(RoktPositiveEngagement)
     public class PositiveEngagement: RoktEvent {
         /// The identifier of the placement.
-        @objc public let placementId: String?
+        @objc public let identifier: String?
 
-        @objc public init(placementId: String?) {
-            self.placementId = placementId
+        @objc public init(identifier: String?) {
+            self.identifier = identifier
             super.init()
         }
     }
@@ -167,16 +167,16 @@ public class RoktEvent: NSObject {
     @objc(RoktFirstPositiveEngagement)
     public class FirstPositiveEngagement: RoktEvent {
         /// The identifier of the placement.
-        @objc public let placementId: String?
+        @objc public let identifier: String?
 
         /// Callback to set fulfillment attributes after the engagement.
         @objc public var setFulfillmentAttributes: (([String: String]) -> Void)?
 
         @objc public init(
-            placementId: String?,
+            identifier: String?,
             setFulfillmentAttributes: (([String: String]) -> Void)? = nil
         ) {
-            self.placementId = placementId
+            self.identifier = identifier
             self.setFulfillmentAttributes = setFulfillmentAttributes
             super.init()
         }
@@ -186,12 +186,12 @@ public class RoktEvent: NSObject {
     @objc(RoktOpenUrl)
     public class OpenUrl: RoktEvent {
         /// The identifier of the placement.
-        @objc public let placementId: String?
+        @objc public let identifier: String?
         /// The URL the user pressed.
         @objc public let url: String
 
-        @objc public init(placementId: String?, url: String) {
-            self.placementId = placementId
+        @objc public init(identifier: String?, url: String) {
+            self.identifier = identifier
             self.url = url
             super.init()
         }
@@ -206,12 +206,12 @@ public class RoktEvent: NSObject {
     @objc(RoktEmbeddedSizeChanged)
     public class EmbeddedSizeChanged: RoktEvent {
         /// The identifier of the placement whose height changed.
-        @objc public let placementId: String
+        @objc public let identifier: String
         /// The new height of the placement in points.
         @objc public let updatedHeight: CGFloat
 
-        @objc public init(placementId: String, updatedHeight: CGFloat) {
-            self.placementId = placementId
+        @objc public init(identifier: String, updatedHeight: CGFloat) {
+            self.identifier = identifier
             self.updatedHeight = updatedHeight
             super.init()
         }
@@ -226,7 +226,7 @@ public class RoktEvent: NSObject {
     @objc(RoktCartItemInstantPurchase)
     public class CartItemInstantPurchase: RoktEvent {
         /// The identifier of the placement.
-        @objc public let placementId: String
+        @objc public let identifier: String
         /// The display name of the purchased item.
         @objc public let name: String?
         /// The cart-level item identifier.
@@ -250,7 +250,7 @@ public class RoktEvent: NSObject {
         @objc public let unitPrice: NSDecimalNumber?
 
         @objc public init(
-            placementId: String,
+            identifier: String,
             name: String?,
             cartItemId: String,
             catalogItemId: String,
@@ -262,7 +262,7 @@ public class RoktEvent: NSObject {
             totalPrice: NSDecimalNumber?,
             unitPrice: NSDecimalNumber?
         ) {
-            self.placementId = placementId
+            self.identifier = identifier
             self.name = name
             self.cartItemId = cartItemId
             self.catalogItemId = catalogItemId
