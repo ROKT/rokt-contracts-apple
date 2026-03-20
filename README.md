@@ -72,7 +72,7 @@ onEvent: { event in
     case let e as RoktEvent.InitComplete:
         print("Init: \(e.success)")
     case let e as RoktEvent.PlacementReady:
-        print("Ready: \(e.placementId ?? "")")
+        print("Ready: \(e.identifier ?? "")")
     case let e as RoktEvent.EmbeddedSizeChanged:
         print("Height: \(e.updatedHeight)")
     case let e as RoktEvent.CartItemInstantPurchase:
