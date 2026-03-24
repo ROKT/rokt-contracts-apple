@@ -12,7 +12,7 @@ Add the dependency to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/ROKT/rokt-contracts-apple.git", from: "1.0.0"),
+    .package(url: "https://github.com/ROKT/rokt-contracts-apple.git", from: "0.1.0"),
 ]
 ```
 
@@ -43,24 +43,28 @@ pod install
 
 ### Events
 
-`RoktEvent` is the base class for all events emitted during the Rokt placement lifecycle. All 14 event subclasses use `@objc` annotations for Objective-C interoperability.
+`RoktEvent` is the base class for all events emitted during the Rokt placement lifecycle. All 18 event subclasses use `@objc` annotations for Objective-C interoperability.
 
-| Event                               | Description                                               |
-| ----------------------------------- | --------------------------------------------------------- |
-| `RoktEvent.InitComplete`            | SDK initialization result (`success: Bool`)               |
-| `RoktEvent.ShowLoadingIndicator`    | SDK is calling the Rokt backend                           |
-| `RoktEvent.HideLoadingIndicator`    | SDK received response from backend                        |
-| `RoktEvent.PlacementReady`          | Placement ready but not yet rendered                      |
-| `RoktEvent.PlacementInteractive`    | Placement rendered and interactable                       |
-| `RoktEvent.PlacementClosed`         | User dismissed the placement                              |
-| `RoktEvent.PlacementCompleted`      | No more offers to display                                 |
-| `RoktEvent.PlacementFailure`        | Placement could not be displayed                          |
-| `RoktEvent.OfferEngagement`         | User engaged with an offer                                |
-| `RoktEvent.PositiveEngagement`      | User positively engaged                                   |
-| `RoktEvent.FirstPositiveEngagement` | First positive engagement (includes fulfillment callback) |
-| `RoktEvent.OpenUrl`                 | User pressed a URL for partner app handling               |
-| `RoktEvent.CartItemInstantPurchase` | Purchase made through Shoppable Ads                       |
-| `RoktEvent.EmbeddedSizeChanged`     | Embedded placement height changed                         |
+| Event                                        | Description                                               |
+| -------------------------------------------- | --------------------------------------------------------- |
+| `RoktEvent.InitComplete`                     | SDK initialization result (`success: Bool`)               |
+| `RoktEvent.ShowLoadingIndicator`             | SDK is calling the Rokt backend                           |
+| `RoktEvent.HideLoadingIndicator`             | SDK received response from backend                        |
+| `RoktEvent.PlacementReady`                   | Placement ready but not yet rendered                      |
+| `RoktEvent.PlacementInteractive`             | Placement rendered and interactable                       |
+| `RoktEvent.PlacementClosed`                  | User dismissed the placement                              |
+| `RoktEvent.PlacementCompleted`               | No more offers to display                                 |
+| `RoktEvent.PlacementFailure`                 | Placement could not be displayed                          |
+| `RoktEvent.OfferEngagement`                  | User engaged with an offer                                |
+| `RoktEvent.PositiveEngagement`               | User positively engaged                                   |
+| `RoktEvent.FirstPositiveEngagement`          | First positive engagement (includes fulfillment callback) |
+| `RoktEvent.OpenUrl`                          | User pressed a URL for partner app handling               |
+| `RoktEvent.CartItemInstantPurchaseInitiated` | Purchase initiated for a catalog item                     |
+| `RoktEvent.CartItemInstantPurchase`          | Purchase completed through Shoppable Ads                  |
+| `RoktEvent.CartItemInstantPurchaseFailure`   | Purchase failed for a catalog item                        |
+| `RoktEvent.InstantPurchaseDismissal`         | User dismissed the instant purchase overlay               |
+| `RoktEvent.CartItemDevicePay`                | Device payment (Apple Pay) triggered                      |
+| `RoktEvent.EmbeddedSizeChanged`              | Embedded placement height changed                         |
 
 #### Usage
 
@@ -75,8 +79,16 @@ onEvent: { event in
         print("Ready: \(e.identifier ?? "")")
     case let e as RoktEvent.EmbeddedSizeChanged:
         print("Height: \(e.updatedHeight)")
+    case let e as RoktEvent.CartItemInstantPurchaseInitiated:
+        print("Purchase initiated: \(e.catalogItemId)")
     case let e as RoktEvent.CartItemInstantPurchase:
         print("Purchase: \(e.name ?? "") \(e.totalPrice ?? 0) \(e.currency)")
+    case let e as RoktEvent.CartItemInstantPurchaseFailure:
+        print("Purchase failed: \(e.error ?? "unknown")")
+    case let e as RoktEvent.InstantPurchaseDismissal:
+        print("Dismissed: \(e.identifier)")
+    case let e as RoktEvent.CartItemDevicePay:
+        print("Device pay: \(e.paymentProvider) for \(e.catalogItemId)")
     default:
         break
     }
@@ -133,7 +145,7 @@ Supporting value types: `PaymentMethodType`, `PaymentItem`, `PaymentResult`, `Pa
 ```text
 Sources/RoktContracts/
 ├── Events/
-│   └── RoktEvent.swift             14 event subclasses
+│   └── RoktEvent.swift             18 event subclasses
 ├── Config/
 │   └── RoktConfig.swift            RoktConfig + RoktColorMode
 ├── Views/
@@ -147,7 +159,7 @@ Sources/RoktContracts/
 
 ## Requirements
 
-- iOS 15.0+ / tvOS 15.0+
+- iOS 13.0+ / tvOS 13.0+
 - Swift 5.9+
 - Xcode 15.0+
 
@@ -160,7 +172,7 @@ RoktConfig *config = [[RoktConfig alloc] init];
 config.colorMode = RoktColorModeLight;
 ```
 
-Event classes use flattened ObjC names (e.g. `RoktPlacementReady`, `RoktCartItemInstantPurchase`).
+Event classes use flattened ObjC names (e.g. `RoktPlacementReady`, `RoktCartItemInstantPurchase`, `RoktCartItemDevicePay`).
 
 ## License
 

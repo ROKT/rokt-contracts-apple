@@ -25,7 +25,11 @@ import Foundation
 /// - ``PositiveEngagement``: User positively engaged with an offer
 /// - ``FirstPositiveEngagement``: First positive engagement (includes fulfillment callback)
 /// - ``OpenUrl``: User pressed a URL configured for partner app handling
-/// - ``CartItemInstantPurchase``: Purchase made through a Shoppable Ads placement
+/// - ``CartItemInstantPurchaseInitiated``: Purchase initiated for a catalog item
+/// - ``CartItemInstantPurchase``: Purchase completed through a Shoppable Ads placement
+/// - ``CartItemInstantPurchaseFailure``: Purchase failed for a catalog item
+/// - ``InstantPurchaseDismissal``: User dismissed the instant purchase overlay
+/// - ``CartItemDevicePay``: Device payment (Apple Pay) triggered for a catalog item
 ///
 /// ## Usage
 ///
@@ -219,6 +223,27 @@ public class RoktEvent: NSObject {
 
     // MARK: - Shoppable Ads Events
 
+    /// Emitted when the SDK initiates a purchase for a catalog item.
+    ///
+    /// Fired when the user taps "Buy" on a Shoppable Ads item, before
+    /// payment processing begins.
+    @objc(RoktCartItemInstantPurchaseInitiated)
+    public class CartItemInstantPurchaseInitiated: RoktEvent {
+        /// The identifier of the placement.
+        @objc public let identifier: String
+        /// The catalog-level item identifier.
+        @objc public let catalogItemId: String
+        /// The cart-level item identifier.
+        @objc public let cartItemId: String
+
+        @objc public init(identifier: String, catalogItemId: String, cartItemId: String) {
+            self.identifier = identifier
+            self.catalogItemId = catalogItemId
+            self.cartItemId = cartItemId
+            super.init()
+        }
+    }
+
     /// Emitted when a purchase is made through a Shoppable Ads placement.
     ///
     /// Contains the full details of the purchased cart item including
@@ -273,6 +298,63 @@ public class RoktEvent: NSObject {
             self.quantity = quantity
             self.totalPrice = totalPrice
             self.unitPrice = unitPrice
+            super.init()
+        }
+    }
+
+    /// Emitted when a catalog item purchase fails in a Shoppable Ads placement.
+    @objc(RoktCartItemInstantPurchaseFailure)
+    public class CartItemInstantPurchaseFailure: RoktEvent {
+        /// The identifier of the placement.
+        @objc public let identifier: String
+        /// The catalog-level item identifier.
+        @objc public let catalogItemId: String
+        /// The cart-level item identifier.
+        @objc public let cartItemId: String
+        /// Description of the failure, if available.
+        @objc public let error: String?
+
+        @objc public init(identifier: String, catalogItemId: String, cartItemId: String, error: String?) {
+            self.identifier = identifier
+            self.catalogItemId = catalogItemId
+            self.cartItemId = cartItemId
+            self.error = error
+            super.init()
+        }
+    }
+
+    /// Emitted when the user dismisses the instant purchase overlay.
+    @objc(RoktInstantPurchaseDismissal)
+    public class InstantPurchaseDismissal: RoktEvent {
+        /// The identifier of the placement.
+        @objc public let identifier: String
+
+        @objc public init(identifier: String) {
+            self.identifier = identifier
+            super.init()
+        }
+    }
+
+    /// Emitted when a device payment (e.g. Apple Pay) is triggered for a catalog item.
+    ///
+    /// This event indicates the SDK is about to present the device payment sheet
+    /// via the registered `PaymentExtension`.
+    @objc(RoktCartItemDevicePay)
+    public class CartItemDevicePay: RoktEvent {
+        /// The identifier of the placement.
+        @objc public let identifier: String
+        /// The catalog-level item identifier.
+        @objc public let catalogItemId: String
+        /// The cart-level item identifier.
+        @objc public let cartItemId: String
+        /// The payment provider handling the transaction (e.g. "stripe").
+        @objc public let paymentProvider: String
+
+        @objc public init(identifier: String, catalogItemId: String, cartItemId: String, paymentProvider: String) {
+            self.identifier = identifier
+            self.catalogItemId = catalogItemId
+            self.cartItemId = cartItemId
+            self.paymentProvider = paymentProvider
             super.init()
         }
     }
