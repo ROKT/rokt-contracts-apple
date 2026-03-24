@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'RoktContracts'
-  s.version          = '1.0.0'
+  s.version          = '0.1.0'
   s.summary          = 'Shared protocols and types for the Rokt SDK ecosystem.'
   s.swift_version    = '5.9'
 
@@ -15,8 +15,8 @@ Pod::Spec.new do |s|
   s.author           = { 'ROKT DEV' => 'nativeappsdev@rokt.com' }
   s.source           = { :git => 'https://github.com/ROKT/rokt-contracts-apple.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '15.0'
-  s.tvos.deployment_target = '15.0'
+  s.ios.deployment_target = '13.0'
+  s.tvos.deployment_target = '13.0'
 
   s.source_files = 'Sources/RoktContracts/**/*.swift'
   s.frameworks = 'Foundation'

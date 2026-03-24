@@ -4,8 +4,8 @@ import PackageDescription
 let package = Package(
     name: "RoktContracts",
     platforms: [
-        .iOS(.v15),
-        .tvOS(.v15)
+        .iOS(.v13),
+        .tvOS(.v13)
     ],
     products: [
         .library(name: "RoktContracts", targets: ["RoktContracts"])
