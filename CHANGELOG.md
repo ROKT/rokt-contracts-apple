@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RoktEvent.InstantPurchaseDismissal` — user dismissed the instant purchase overlay
 - `RoktEvent.CartItemDevicePay` — device payment (Apple Pay) triggered for a catalog item
 
+## [1.0.1] - 2026-03-24
+
+### Added
+
+- Add Shoppable Ads payment lifecycle events ([#5](https://github.com/ROKT/rokt-contracts-apple/pull/5))
+
+### Fixed
+
+- Fix release workflows not appearing in GitHub Actions ([#6](https://github.com/ROKT/rokt-contracts-apple/pull/6))
+
 ## [0.1.0] - 2026-03-24
 
 ### Added
