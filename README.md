@@ -124,21 +124,37 @@ rokt.selectPlacements(
 
 ### Payment Extension Protocol
 
-`PaymentExtension` defines the contract for Shoppable Ads payment integrations. Payment extensions depend only on RoktContracts, not the full Rokt SDK:
+`PaymentExtension` defines the contract for Shoppable Ads payment integrations. Payment extensions depend only on RoktContracts, not the full Rokt SDK. In Objective-C the protocol is exposed as **`RoktPaymentExtension`**.
 
 ```swift
 class StripePaymentExtension: PaymentExtension {
     var id: String { "stripe" }
     var extensionDescription: String { "Stripe Payments" }
-    var supportedMethods: [PaymentMethodType] { [.applePay, .card] }
+    var supportedMethods: [String] {
+        [PaymentMethodType.applePay.wireValue, PaymentMethodType.card.wireValue]
+    }
 
     func onRegister(parameters: [String: String]) -> Bool { /* ... */ }
     func onUnregister() { /* ... */ }
-    func presentPaymentSheet(/* ... */) { /* ... */ }
+
+    #if canImport(UIKit)
+    func presentPaymentSheet(
+        item: PaymentItem,
+        method: PaymentMethodType,
+        from viewController: UIViewController,
+        preparePayment: @escaping (
+            _ address: ContactAddress,
+            _ completion: @escaping (PaymentPreparation?, Error?) -> Void
+        ) -> Void,
+        completion: @escaping (PaymentSheetResult) -> Void
+    ) { /* ... */ }
+    #endif
 }
 ```
 
-Supporting value types: `PaymentMethodType`, `PaymentItem`, `PaymentResult`, `PaymentPreparation`, `ContactAddress`.
+`supportedMethods` returns stable wire strings (`apple_pay`, `card`; see `PaymentMethodType.wireValue`). `PaymentMethodType` uses integer raw values for Objective-C (`RoktPaymentMethodType` / `NS_ENUM`).
+
+Payment sheet types are `NSObject` subclasses (or `NS_ENUM`) so they work with **`@objc(RoktPaymentExtension)`**, including `presentPaymentSheet`: `preparePayment` uses a completion handler (not `async`/`throws`), and the final `completion` receives **`PaymentSheetResult`** (`RoktPaymentSheetResult` / `RoktPaymentSheetOutcome`) instead of a Swift enum with associated values.
 
 ## Package Structure
 
@@ -154,7 +170,7 @@ Sources/RoktContracts/
 │   └── RoktPlacementOptions.swift  SDK-Kit performance tracking
 └── Payment/
     ├── PaymentExtension.swift      Protocol for payment integrations
-    └── PaymentTypes.swift          Value types (Sendable)
+    └── PaymentTypes.swift          Payment models (`NSObject` / enums for ObjC)
 ```
 
 ## Requirements
@@ -165,14 +181,18 @@ Sources/RoktContracts/
 
 ## Objective-C Compatibility
 
-All shared types use `@objc` annotations and are fully accessible from Objective-C:
+Core types use `@objc` annotations so they are usable from Objective-C where supported:
 
 ```objc
 RoktConfig *config = [[RoktConfig alloc] init];
 config.colorMode = RoktColorModeLight;
 ```
 
-Event classes use flattened ObjC names (e.g. `RoktPlacementReady`, `RoktCartItemInstantPurchase`, `RoktCartItemDevicePay`).
+Event classes use flattened Objective-C names (for example `RoktPlacementReady`, `RoktCartItemInstantPurchase`, `RoktCartItemDevicePay`).
+
+Payment integration exposes **`RoktPaymentExtension`**, **`RoktPaymentMethodType`**, and sheet model types (for example **`RoktPaymentItem`**, **`RoktContactAddress`**, **`RoktPaymentPreparation`**, **`RoktPaymentSheetResult`**).
+
+Pure Swift-only types elsewhere in the package (if any) are not visible to Objective-C unless noted above.
 
 ## License
 
