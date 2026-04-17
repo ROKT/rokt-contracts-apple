@@ -183,16 +183,16 @@ public class ContactAddress: NSObject, @unchecked Sendable {
 /// that collect addresses in their own UI, these may be left `nil`.
 ///
 /// Exposed to Objective-C as ``RoktPaymentContext``.
+@objcMembers
 @objc(RoktPaymentContext)
 public class PaymentContext: NSObject, @unchecked Sendable {
     /// Pre-collected billing address, if available.
-    @objc public let billingAddress: ContactAddress?
+    public let billingAddress: ContactAddress?
     /// Pre-collected shipping address, if available.
-    @objc public let shippingAddress: ContactAddress?
+    public let shippingAddress: ContactAddress?
     /// Custom URL scheme for redirect-based payment methods (e.g. `"myapp://stripe-redirect"`).
-    @objc public let returnURL: String?
+    public let returnURL: String?
 
-    @objc
     public init(
         billingAddress: ContactAddress? = nil,
         shippingAddress: ContactAddress? = nil,
