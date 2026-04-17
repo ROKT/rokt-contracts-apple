@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-04-17
+
+### Added
+
+- Add payment context for afterpay flows ([#17](https://github.com/ROKT/rokt-contracts-apple/pull/17))
+
+### Changed
+
+- Bump actions/create-github-app-token from 3.0.0 to 3.1.1 ([#15](https://github.com/ROKT/rokt-contracts-apple/pull/15))
+- Bump peter-evans/create-pull-request from 8.1.0 to 8.1.1 ([#16](https://github.com/ROKT/rokt-contracts-apple/pull/16))
+- Use GitHub App token and shared workflow for trunk upgrade ([#12](https://github.com/ROKT/rokt-contracts-apple/pull/12))
+
 ## [0.1.3] - 2026-04-02
 
 ### Added
