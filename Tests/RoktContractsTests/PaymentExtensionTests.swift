@@ -18,6 +18,7 @@ final class PaymentExtensionTests: XCTestCase {
         func presentPaymentSheet(
             item: PaymentItem,
             method: PaymentMethodType,
+            context: PaymentContext,
             from viewController: UIViewController,
             preparePayment: @escaping (
                 _ address: ContactAddress,
@@ -49,6 +50,7 @@ final class PaymentExtensionTests: XCTestCase {
         ext.presentPaymentSheet(
             item: item,
             method: .applePay,
+            context: PaymentContext(),
             from: vc,
             preparePayment: { address, done in
                 XCTAssertEqual(address.email, "user@example.com")
@@ -75,6 +77,7 @@ final class PaymentExtensionTests: XCTestCase {
         ext.presentPaymentSheet(
             item: item,
             method: .card,
+            context: PaymentContext(),
             from: vc,
             preparePayment: { _, done in
                 done(nil, TestErr())
@@ -99,6 +102,7 @@ final class PaymentExtensionTests: XCTestCase {
         ext.presentPaymentSheet(
             item: item,
             method: .card,
+            context: PaymentContext(),
             from: vc,
             preparePayment: { _, done in
                 done(nil, nil)

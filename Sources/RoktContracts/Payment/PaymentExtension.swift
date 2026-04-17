@@ -54,6 +54,8 @@ public protocol PaymentExtension: AnyObject {
     /// - Parameters:
     ///   - item: The item being purchased.
     ///   - method: The payment method to use.
+    ///   - context: Pre-collected addresses and method-specific metadata. For redirect-based methods
+    ///     like Afterpay, the billing/shipping addresses and return URL are provided here.
     ///   - viewController: The view controller to present the sheet from.
     ///   - preparePayment: Invoked to prepare the payment on the backend. Call `completion` once with
     ///     a ``PaymentPreparation`` on success or `nil` preparation and an `Error` on failure.
@@ -61,6 +63,7 @@ public protocol PaymentExtension: AnyObject {
     func presentPaymentSheet(
         item: PaymentItem,
         method: PaymentMethodType,
+        context: PaymentContext,
         from viewController: UIViewController,
         preparePayment: @escaping (
             _ address: ContactAddress,
@@ -69,4 +72,18 @@ public protocol PaymentExtension: AnyObject {
         completion: @escaping (PaymentSheetResult) -> Void
     )
     #endif
+
+    /// Handle a URL passed to the host app (typically a payment provider redirect).
+    ///
+    /// Redirect-based payment methods (e.g. Afterpay) open a web page for
+    /// authentication and redirect back to the app via a custom URL scheme. The host
+    /// app forwards incoming URLs to ``Rokt/handleURLCallback(with:)``, which in turn
+    /// asks each registered extension whether it recognizes the URL.
+    ///
+    /// Extensions that do not use redirects can leave this method unimplemented —
+    /// the SDK treats "not implemented" as "not handled".
+    ///
+    /// - Parameter url: The URL received by the host app.
+    /// - Returns: `true` if this extension recognized and handled the URL, `false` otherwise.
+    @objc optional func handleURLCallback(with url: URL) -> Bool
 }

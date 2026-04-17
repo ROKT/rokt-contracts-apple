@@ -10,22 +10,26 @@ public enum PaymentMethodType: Int, Sendable, CaseIterable {
     case applePay = 0
     /// Credit/debit card.
     case card = 1
+    /// Afterpay / Clearpay.
+    case afterpay = 2
 }
 
-extension PaymentMethodType {
+public extension PaymentMethodType {
     /// Stable string identifier (e.g. for configuration or logging).
-    public var wireValue: String {
+    var wireValue: String {
         switch self {
         case .applePay: return "apple_pay"
         case .card: return "card"
+        case .afterpay: return "afterpay_clearpay"
         }
     }
 
     /// Creates a payment method from a wire string, if recognized.
-    public init?(wireValue: String) {
+    init?(wireValue: String) {
         switch wireValue {
         case "apple_pay": self = .applePay
         case "card": self = .card
+        case "afterpay_clearpay": self = .afterpay
         default: return nil
         }
     }
@@ -59,7 +63,7 @@ public class PaymentItem: NSObject, @unchecked Sendable {
     public init(id: String, name: String, amountNumber: NSDecimalNumber, currency: String) {
         self.id = id
         self.name = name
-        self.amount = amountNumber
+        amount = amountNumber
         self.currency = currency
         super.init()
     }
@@ -167,6 +171,36 @@ public class ContactAddress: NSObject, @unchecked Sendable {
         self.state = state
         self.postalCode = postalCode
         self.country = country
+        super.init()
+    }
+}
+
+/// Contextual information for a payment attempt, carrying pre-collected addresses
+/// and method-specific metadata needed before the payment UI is presented.
+///
+/// For payment methods like Afterpay that require billing/shipping address before
+/// the payment flow begins, populate the address fields. For methods like Apple Pay
+/// that collect addresses in their own UI, these may be left `nil`.
+///
+/// Exposed to Objective-C as ``RoktPaymentContext``.
+@objcMembers
+@objc(RoktPaymentContext)
+public class PaymentContext: NSObject, @unchecked Sendable {
+    /// Pre-collected billing address, if available.
+    public let billingAddress: ContactAddress?
+    /// Pre-collected shipping address, if available.
+    public let shippingAddress: ContactAddress?
+    /// Custom URL scheme for redirect-based payment methods (e.g. `"myapp://stripe-redirect"`).
+    public let returnURL: String?
+
+    public init(
+        billingAddress: ContactAddress? = nil,
+        shippingAddress: ContactAddress? = nil,
+        returnURL: String? = nil
+    ) {
+        self.billingAddress = billingAddress
+        self.shippingAddress = shippingAddress
+        self.returnURL = returnURL
         super.init()
     }
 }

@@ -7,13 +7,16 @@ final class PaymentTypesTests: XCTestCase {
     func testPaymentMethodTypeRawValues() {
         XCTAssertEqual(PaymentMethodType.applePay.rawValue, 0)
         XCTAssertEqual(PaymentMethodType.card.rawValue, 1)
+        XCTAssertEqual(PaymentMethodType.afterpay.rawValue, 2)
     }
 
     func testPaymentMethodTypeWireValues() {
         XCTAssertEqual(PaymentMethodType.applePay.wireValue, "apple_pay")
         XCTAssertEqual(PaymentMethodType.card.wireValue, "card")
+        XCTAssertEqual(PaymentMethodType.afterpay.wireValue, "afterpay_clearpay")
         XCTAssertEqual(PaymentMethodType(wireValue: "apple_pay"), .applePay)
         XCTAssertEqual(PaymentMethodType(wireValue: "card"), .card)
+        XCTAssertEqual(PaymentMethodType(wireValue: "afterpay_clearpay"), .afterpay)
         XCTAssertNil(PaymentMethodType(wireValue: "unknown"))
     }
 
@@ -120,5 +123,30 @@ final class PaymentTypesTests: XCTestCase {
         XCTAssertEqual(addr.email, "jane@example.com")
         XCTAssertNil(addr.addressLine1)
         XCTAssertNil(addr.city)
+    }
+
+    func testPaymentContextFull() {
+        let billing = ContactAddress(
+            name: "John Doe", email: "john@example.com",
+            addressLine1: "123 Main St", city: "Sydney",
+            state: "NSW", postalCode: "2000", country: "AU"
+        )
+        let shipping = ContactAddress(name: "John Doe", email: "john@example.com")
+        let context = PaymentContext(
+            billingAddress: billing,
+            shippingAddress: shipping,
+            returnURL: "myapp://stripe-redirect"
+        )
+        XCTAssertEqual(context.billingAddress?.name, "John Doe")
+        XCTAssertEqual(context.billingAddress?.addressLine1, "123 Main St")
+        XCTAssertEqual(context.shippingAddress?.email, "john@example.com")
+        XCTAssertEqual(context.returnURL, "myapp://stripe-redirect")
+    }
+
+    func testPaymentContextDefaults() {
+        let context = PaymentContext()
+        XCTAssertNil(context.billingAddress)
+        XCTAssertNil(context.shippingAddress)
+        XCTAssertNil(context.returnURL)
     }
 }
