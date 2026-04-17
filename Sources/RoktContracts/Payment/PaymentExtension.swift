@@ -54,6 +54,8 @@ public protocol PaymentExtension: AnyObject {
     /// - Parameters:
     ///   - item: The item being purchased.
     ///   - method: The payment method to use.
+    ///   - context: Pre-collected addresses and method-specific metadata. For redirect-based methods
+    ///     like Afterpay, the billing/shipping addresses and return URL are provided here.
     ///   - viewController: The view controller to present the sheet from.
     ///   - preparePayment: Invoked to prepare the payment on the backend. Call `completion` once with
     ///     a ``PaymentPreparation`` on success or `nil` preparation and an `Error` on failure.
@@ -61,6 +63,7 @@ public protocol PaymentExtension: AnyObject {
     func presentPaymentSheet(
         item: PaymentItem,
         method: PaymentMethodType,
+        context: PaymentContext,
         from viewController: UIViewController,
         preparePayment: @escaping (
             _ address: ContactAddress,
