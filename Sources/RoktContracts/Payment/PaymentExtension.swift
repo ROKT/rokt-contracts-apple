@@ -72,4 +72,18 @@ public protocol PaymentExtension: AnyObject {
         completion: @escaping (PaymentSheetResult) -> Void
     )
     #endif
+
+    /// Handle a URL passed to the host app (typically a payment provider redirect).
+    ///
+    /// Redirect-based payment methods (e.g. Afterpay) open a web page for
+    /// authentication and redirect back to the app via a custom URL scheme. The host
+    /// app forwards incoming URLs to ``Rokt/handleURLCallback(with:)``, which in turn
+    /// asks each registered extension whether it recognizes the URL.
+    ///
+    /// Extensions that do not use redirects can leave this method unimplemented —
+    /// the SDK treats "not implemented" as "not handled".
+    ///
+    /// - Parameter url: The URL received by the host app.
+    /// - Returns: `true` if this extension recognized and handled the URL, `false` otherwise.
+    @objc optional func handleURLCallback(with url: URL) -> Bool
 }
