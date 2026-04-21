@@ -8,15 +8,18 @@ final class PaymentTypesTests: XCTestCase {
         XCTAssertEqual(PaymentMethodType.applePay.rawValue, 0)
         XCTAssertEqual(PaymentMethodType.card.rawValue, 1)
         XCTAssertEqual(PaymentMethodType.afterpay.rawValue, 2)
+        XCTAssertEqual(PaymentMethodType.paypal.rawValue, 3)
     }
 
     func testPaymentMethodTypeWireValues() {
         XCTAssertEqual(PaymentMethodType.applePay.wireValue, "apple_pay")
         XCTAssertEqual(PaymentMethodType.card.wireValue, "card")
         XCTAssertEqual(PaymentMethodType.afterpay.wireValue, "afterpay_clearpay")
+        XCTAssertEqual(PaymentMethodType.paypal.wireValue, "paypal")
         XCTAssertEqual(PaymentMethodType(wireValue: "apple_pay"), .applePay)
         XCTAssertEqual(PaymentMethodType(wireValue: "card"), .card)
         XCTAssertEqual(PaymentMethodType(wireValue: "afterpay_clearpay"), .afterpay)
+        XCTAssertEqual(PaymentMethodType(wireValue: "paypal"), .paypal)
         XCTAssertNil(PaymentMethodType(wireValue: "unknown"))
     }
 
