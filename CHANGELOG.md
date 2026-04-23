@@ -7,11 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- Add `totalAmount`, `shippingCost`, and `tax` to `PaymentPreparation`
-- Keep the legacy `PaymentPreparation(clientSecret:merchantId:)` initializer for backward compatibility
-
 ## [2.0.0] - 2026-04-23
 
 ### Added
