@@ -125,11 +125,49 @@ public class PaymentPreparation: NSObject, @unchecked Sendable {
     @objc public let clientSecret: String
     /// The merchant identifier.
     @objc public let merchantId: String
+    /// Grand total the customer will be charged, including tax and shipping.
+    @objc public let totalAmount: NSDecimalNumber
+    /// Shipping cost component of ``totalAmount``.
+    @objc public let shippingCost: NSDecimalNumber
+    /// Tax component of ``totalAmount``.
+    @objc public let tax: NSDecimalNumber
 
-    @objc
-    public init(clientSecret: String, merchantId: String) {
+    /// Swift initializer using `Decimal` amounts.
+    public init(
+        clientSecret: String,
+        merchantId: String,
+        totalAmount: Decimal,
+        shippingCost: Decimal = 0,
+        tax: Decimal = 0
+    ) {
         self.clientSecret = clientSecret
         self.merchantId = merchantId
+        self.totalAmount = NSDecimalNumber(decimal: totalAmount)
+        self.shippingCost = NSDecimalNumber(decimal: shippingCost)
+        self.tax = NSDecimalNumber(decimal: tax)
+        super.init()
+    }
+
+    /// Backward-compatible initializer that defaults amount fields to zero.
+    @objc(initWithClientSecret:merchantId:)
+    public convenience init(clientSecret: String, merchantId: String) {
+        self.init(clientSecret: clientSecret, merchantId: merchantId, totalAmount: 0)
+    }
+
+    /// Objective-C initializer taking `NSDecimalNumber` amounts.
+    @objc
+    public init(
+        clientSecret: String,
+        merchantId: String,
+        totalAmountNumber: NSDecimalNumber,
+        shippingCostNumber: NSDecimalNumber,
+        taxNumber: NSDecimalNumber
+    ) {
+        self.clientSecret = clientSecret
+        self.merchantId = merchantId
+        totalAmount = totalAmountNumber
+        shippingCost = shippingCostNumber
+        tax = taxNumber
         super.init()
     }
 }
