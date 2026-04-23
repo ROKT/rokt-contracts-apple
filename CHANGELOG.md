@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-04-23
+
 ### Added
 
-- Add `totalAmount`, `shippingCost`, and `tax` to `PaymentPreparation`
-- Keep the legacy `PaymentPreparation(clientSecret:merchantId:)` initializer for backward compatibility
+- Add PayPal as a PaymentMethodType ([#19](https://github.com/ROKT/rokt-contracts-apple/pull/19))
+- Add totals to payment preparation ([#20](https://github.com/ROKT/rokt-contracts-apple/pull/20))
 
 ## [1.0.0] - 2026-04-17
 
