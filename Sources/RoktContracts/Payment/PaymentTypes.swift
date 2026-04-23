@@ -12,6 +12,8 @@ public enum PaymentMethodType: Int, Sendable, CaseIterable {
     case card = 1
     /// Afterpay / Clearpay.
     case afterpay = 2
+    /// PayPal.
+    case paypal = 3
 }
 
 public extension PaymentMethodType {
@@ -21,6 +23,7 @@ public extension PaymentMethodType {
         case .applePay: return "apple_pay"
         case .card: return "card"
         case .afterpay: return "afterpay_clearpay"
+        case .paypal: return "paypal"
         }
     }
 
@@ -30,6 +33,7 @@ public extension PaymentMethodType {
         case "apple_pay": self = .applePay
         case "card": self = .card
         case "afterpay_clearpay": self = .afterpay
+        case "paypal": self = .paypal
         default: return nil
         }
     }

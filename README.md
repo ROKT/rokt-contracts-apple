@@ -135,6 +135,7 @@ class StripePaymentExtension: PaymentExtension {
             PaymentMethodType.applePay.wireValue,
             PaymentMethodType.card.wireValue,
             PaymentMethodType.afterpay.wireValue,
+            PaymentMethodType.paypal.wireValue,
         ]
     }
 
@@ -157,7 +158,7 @@ class StripePaymentExtension: PaymentExtension {
 }
 ```
 
-`supportedMethods` returns stable wire strings (`apple_pay`, `card`, `afterpay_clearpay`; see `PaymentMethodType.wireValue`). `PaymentMethodType` uses integer raw values for Objective-C (`RoktPaymentMethodType` / `NS_ENUM`).
+`supportedMethods` returns stable wire strings (`apple_pay`, `card`, `afterpay_clearpay`, `paypal`; see `PaymentMethodType.wireValue`). `PaymentMethodType` uses integer raw values for Objective-C (`RoktPaymentMethodType` / `NS_ENUM`).
 
 Payment sheet types are `NSObject` subclasses (or `NS_ENUM`) so they work with **`@objc(RoktPaymentExtension)`**, including `presentPaymentSheet`: `context` carries pre-collected billing or shipping addresses plus redirect metadata such as a return URL, `preparePayment` uses a completion handler (not `async`/`throws`), and the final `completion` receives **`PaymentSheetResult`** (`RoktPaymentSheetResult` / `RoktPaymentSheetOutcome`) instead of a Swift enum with associated values.
 
