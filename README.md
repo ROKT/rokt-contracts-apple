@@ -12,7 +12,7 @@ Add the dependency to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/ROKT/rokt-contracts-apple.git", from: "0.1.0"),
+    .package(url: "https://github.com/ROKT/rokt-contracts-apple.git", from: "1.0.0"),
 ]
 ```
 
@@ -160,6 +160,20 @@ class StripePaymentExtension: PaymentExtension {
 `supportedMethods` returns stable wire strings (`apple_pay`, `card`, `afterpay_clearpay`; see `PaymentMethodType.wireValue`). `PaymentMethodType` uses integer raw values for Objective-C (`RoktPaymentMethodType` / `NS_ENUM`).
 
 Payment sheet types are `NSObject` subclasses (or `NS_ENUM`) so they work with **`@objc(RoktPaymentExtension)`**, including `presentPaymentSheet`: `context` carries pre-collected billing or shipping addresses plus redirect metadata such as a return URL, `preparePayment` uses a completion handler (not `async`/`throws`), and the final `completion` receives **`PaymentSheetResult`** (`RoktPaymentSheetResult` / `RoktPaymentSheetOutcome`) instead of a Swift enum with associated values.
+
+When `preparePayment` succeeds, return a `PaymentPreparation` with the amount breakdown that will be charged:
+
+```swift
+let preparation = PaymentPreparation(
+    clientSecret: "cs_live_abc",
+    merchantId: "merchant.test",
+    totalAmount: Decimal(string: "83.53")!,
+    shippingCost: Decimal(string: "0.00")!,
+    tax: Decimal(string: "3.53")!
+)
+```
+
+The legacy `PaymentPreparation(clientSecret:merchantId:)` initializer remains available and defaults the amount fields to zero for backward compatibility.
 
 ## Package Structure
 

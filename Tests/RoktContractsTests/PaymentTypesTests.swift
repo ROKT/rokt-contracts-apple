@@ -97,9 +97,38 @@ final class PaymentTypesTests: XCTestCase {
     }
 
     func testPaymentPreparation() {
+        let prep = PaymentPreparation(
+            clientSecret: "cs_123",
+            merchantId: "merchant.com.test",
+            totalAmount: Decimal(string: "83.53")!,
+            shippingCost: Decimal(string: "0")!,
+            tax: Decimal(string: "3.53")!
+        )
+        XCTAssertEqual(prep.clientSecret, "cs_123")
+        XCTAssertEqual(prep.merchantId, "merchant.com.test")
+        XCTAssertEqual(prep.totalAmount, NSDecimalNumber(string: "83.53"))
+        XCTAssertEqual(prep.shippingCost, NSDecimalNumber.zero)
+        XCTAssertEqual(prep.tax, NSDecimalNumber(string: "3.53"))
+    }
+
+    func testPaymentPreparationDefaultsShippingAndTaxToZero() {
+        let prep = PaymentPreparation(
+            clientSecret: "cs_123",
+            merchantId: "merchant.com.test",
+            totalAmount: Decimal(string: "9.99")!
+        )
+        XCTAssertEqual(prep.totalAmount, NSDecimalNumber(string: "9.99"))
+        XCTAssertEqual(prep.shippingCost, NSDecimalNumber.zero)
+        XCTAssertEqual(prep.tax, NSDecimalNumber.zero)
+    }
+
+    func testPaymentPreparationLegacyInitializerDefaultsAmountsToZero() {
         let prep = PaymentPreparation(clientSecret: "cs_123", merchantId: "merchant.com.test")
         XCTAssertEqual(prep.clientSecret, "cs_123")
         XCTAssertEqual(prep.merchantId, "merchant.com.test")
+        XCTAssertEqual(prep.totalAmount, NSDecimalNumber.zero)
+        XCTAssertEqual(prep.shippingCost, NSDecimalNumber.zero)
+        XCTAssertEqual(prep.tax, NSDecimalNumber.zero)
     }
 
     func testContactAddressFull() {
