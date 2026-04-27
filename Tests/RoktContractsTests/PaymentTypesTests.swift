@@ -112,6 +112,18 @@ final class PaymentTypesTests: XCTestCase {
         XCTAssertEqual(prep.totalAmount, NSDecimalNumber(string: "83.53"))
         XCTAssertEqual(prep.shippingCost, NSDecimalNumber.zero)
         XCTAssertEqual(prep.tax, NSDecimalNumber(string: "3.53"))
+        XCTAssertNil(prep.approvalUrl)
+    }
+
+    func testPaymentPreparationIncludesApprovalUrlWhenProvided() {
+        let url = "https://www.paypal.com/checkoutnow?token=abc"
+        let prep = PaymentPreparation(
+            clientSecret: "cs_123",
+            merchantId: "merchant.com.test",
+            totalAmount: 10,
+            approvalUrl: url
+        )
+        XCTAssertEqual(prep.approvalUrl, url)
     }
 
     func testPaymentPreparationDefaultsShippingAndTaxToZero() {
@@ -123,6 +135,7 @@ final class PaymentTypesTests: XCTestCase {
         XCTAssertEqual(prep.totalAmount, NSDecimalNumber(string: "9.99"))
         XCTAssertEqual(prep.shippingCost, NSDecimalNumber.zero)
         XCTAssertEqual(prep.tax, NSDecimalNumber.zero)
+        XCTAssertNil(prep.approvalUrl)
     }
 
     func testPaymentPreparationLegacyInitializerDefaultsAmountsToZero() {
@@ -132,6 +145,7 @@ final class PaymentTypesTests: XCTestCase {
         XCTAssertEqual(prep.totalAmount, NSDecimalNumber.zero)
         XCTAssertEqual(prep.shippingCost, NSDecimalNumber.zero)
         XCTAssertEqual(prep.tax, NSDecimalNumber.zero)
+        XCTAssertNil(prep.approvalUrl)
     }
 
     func testContactAddressFull() {
@@ -167,12 +181,14 @@ final class PaymentTypesTests: XCTestCase {
         let context = PaymentContext(
             billingAddress: billing,
             shippingAddress: shipping,
-            returnURL: "myapp://stripe-redirect"
+            returnURL: "myapp://stripe-redirect",
+            cancelURL: "myapp://stripe-cancel"
         )
         XCTAssertEqual(context.billingAddress?.name, "John Doe")
         XCTAssertEqual(context.billingAddress?.addressLine1, "123 Main St")
         XCTAssertEqual(context.shippingAddress?.email, "john@example.com")
         XCTAssertEqual(context.returnURL, "myapp://stripe-redirect")
+        XCTAssertEqual(context.cancelURL, "myapp://stripe-cancel")
     }
 
     func testPaymentContextDefaults() {
@@ -180,5 +196,19 @@ final class PaymentTypesTests: XCTestCase {
         XCTAssertNil(context.billingAddress)
         XCTAssertNil(context.shippingAddress)
         XCTAssertNil(context.returnURL)
+        XCTAssertNil(context.cancelURL)
+    }
+
+    func testPaymentContextPayPalRedirectURLsOnly() {
+        let context = PaymentContext(
+            billingAddress: nil,
+            shippingAddress: nil,
+            returnURL: "myapp://paypal/success",
+            cancelURL: "myapp://paypal/cancel"
+        )
+        XCTAssertNil(context.billingAddress)
+        XCTAssertNil(context.shippingAddress)
+        XCTAssertEqual(context.returnURL, "myapp://paypal/success")
+        XCTAssertEqual(context.cancelURL, "myapp://paypal/cancel")
     }
 }

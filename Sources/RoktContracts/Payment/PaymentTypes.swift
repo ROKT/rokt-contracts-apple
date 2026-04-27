@@ -135,21 +135,26 @@ public class PaymentPreparation: NSObject, @unchecked Sendable {
     @objc public let shippingCost: NSDecimalNumber
     /// Tax component of ``totalAmount``.
     @objc public let tax: NSDecimalNumber
+    /// PayPal (or similar) approval URL from initialize-purchase when present; otherwise `nil`.
+    @objc public let approvalUrl: String?
 
     /// Swift initializer using `Decimal` amounts.
-    public init(
+    public convenience init(
         clientSecret: String,
         merchantId: String,
         totalAmount: Decimal,
         shippingCost: Decimal = 0,
-        tax: Decimal = 0
+        tax: Decimal = 0,
+        approvalUrl: String? = nil
     ) {
-        self.clientSecret = clientSecret
-        self.merchantId = merchantId
-        self.totalAmount = NSDecimalNumber(decimal: totalAmount)
-        self.shippingCost = NSDecimalNumber(decimal: shippingCost)
-        self.tax = NSDecimalNumber(decimal: tax)
-        super.init()
+        self.init(
+            clientSecret: clientSecret,
+            merchantId: merchantId,
+            totalAmountNumber: NSDecimalNumber(decimal: totalAmount),
+            shippingCostNumber: NSDecimalNumber(decimal: shippingCost),
+            taxNumber: NSDecimalNumber(decimal: tax),
+            approvalUrl: approvalUrl
+        )
     }
 
     /// Backward-compatible initializer that defaults amount fields to zero.
@@ -159,19 +164,40 @@ public class PaymentPreparation: NSObject, @unchecked Sendable {
     }
 
     /// Objective-C initializer taking `NSDecimalNumber` amounts.
-    @objc
-    public init(
+    @objc(initWithClientSecret:merchantId:totalAmountNumber:shippingCostNumber:taxNumber:)
+    public convenience init(
         clientSecret: String,
         merchantId: String,
         totalAmountNumber: NSDecimalNumber,
         shippingCostNumber: NSDecimalNumber,
         taxNumber: NSDecimalNumber
     ) {
+        self.init(
+            clientSecret: clientSecret,
+            merchantId: merchantId,
+            totalAmountNumber: totalAmountNumber,
+            shippingCostNumber: shippingCostNumber,
+            taxNumber: taxNumber,
+            approvalUrl: nil
+        )
+    }
+
+    /// Objective-C initializer taking `NSDecimalNumber` amounts and optional PayPal approval URL.
+    @objc(initWithClientSecret:merchantId:totalAmountNumber:shippingCostNumber:taxNumber:approvalUrl:)
+    public init(
+        clientSecret: String,
+        merchantId: String,
+        totalAmountNumber: NSDecimalNumber,
+        shippingCostNumber: NSDecimalNumber,
+        taxNumber: NSDecimalNumber,
+        approvalUrl: String?
+    ) {
         self.clientSecret = clientSecret
         self.merchantId = merchantId
         totalAmount = totalAmountNumber
         shippingCost = shippingCostNumber
         tax = taxNumber
+        self.approvalUrl = approvalUrl
         super.init()
     }
 }
@@ -220,9 +246,10 @@ public class ContactAddress: NSObject, @unchecked Sendable {
 /// Contextual information for a payment attempt, carrying pre-collected addresses
 /// and method-specific metadata needed before the payment UI is presented.
 ///
-/// For payment methods like Afterpay that require billing/shipping address before
-/// the payment flow begins, populate the address fields. For methods like Apple Pay
-/// that collect addresses in their own UI, these may be left `nil`.
+/// For payment methods like Afterpay or PayPal that benefit from billing/shipping
+/// before the payment flow begins, populate the address fields. For methods like Apple Pay
+/// that collect addresses in their own UI, these may be left `nil`. For PayPal redirect
+/// flows, supply ``returnURL`` when available; ``cancelURL`` is optional.
 ///
 /// Exposed to Objective-C as ``RoktPaymentContext``.
 @objcMembers
@@ -234,15 +261,19 @@ public class PaymentContext: NSObject, @unchecked Sendable {
     public let shippingAddress: ContactAddress?
     /// Custom URL scheme for redirect-based payment methods (e.g. `"myapp://stripe-redirect"`).
     public let returnURL: String?
+    /// Optional URL when the customer abandons the PayPal (or similar) redirect flow.
+    public let cancelURL: String?
 
     public init(
         billingAddress: ContactAddress? = nil,
         shippingAddress: ContactAddress? = nil,
-        returnURL: String? = nil
+        returnURL: String? = nil,
+        cancelURL: String? = nil
     ) {
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
         self.returnURL = returnURL
+        self.cancelURL = cancelURL
         super.init()
     }
 }
