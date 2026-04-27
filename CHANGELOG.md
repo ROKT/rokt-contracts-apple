@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-04-27
+
+### Fixed
+
+- Include PayPal Approval Url in PaymentPreparation ([#22](https://github.com/ROKT/rokt-contracts-apple/pull/22))
+
 ## [2.0.0] - 2026-04-23
 
 ### Added
