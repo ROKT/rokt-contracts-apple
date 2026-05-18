@@ -151,12 +151,14 @@ final class PaymentTypesTests: XCTestCase {
     func testContactAddressFull() {
         let addr = ContactAddress(
             name: "John Doe", email: "john@example.com",
-            addressLine1: "123 Main St", city: "Sydney",
+            addressLine1: "123 Main St", addressLine2: "Unit 4",
+            city: "Sydney",
             state: "NSW", postalCode: "2000", country: "AU"
         )
         XCTAssertEqual(addr.name, "John Doe")
         XCTAssertEqual(addr.email, "john@example.com")
         XCTAssertEqual(addr.addressLine1, "123 Main St")
+        XCTAssertEqual(addr.addressLine2, "Unit 4")
         XCTAssertEqual(addr.city, "Sydney")
         XCTAssertEqual(addr.state, "NSW")
         XCTAssertEqual(addr.postalCode, "2000")
@@ -168,6 +170,7 @@ final class PaymentTypesTests: XCTestCase {
         XCTAssertEqual(addr.name, "Jane")
         XCTAssertEqual(addr.email, "jane@example.com")
         XCTAssertNil(addr.addressLine1)
+        XCTAssertNil(addr.addressLine2)
         XCTAssertNil(addr.city)
     }
 

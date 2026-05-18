@@ -213,6 +213,8 @@ public class ContactAddress: NSObject, @unchecked Sendable {
     @objc public let email: String
     /// Street address line 1.
     @objc public let addressLine1: String?
+    /// Street address line 2.
+    @objc public let addressLine2: String?
     /// City name.
     @objc public let city: String?
     /// State or region.
@@ -222,8 +224,8 @@ public class ContactAddress: NSObject, @unchecked Sendable {
     /// ISO country code.
     @objc public let country: String?
 
-    @objc
-    public init(
+    @objc(initWithName:email:addressLine1:city:state:postalCode:country:)
+    public convenience init(
         name: String,
         email: String,
         addressLine1: String? = nil,
@@ -232,9 +234,33 @@ public class ContactAddress: NSObject, @unchecked Sendable {
         postalCode: String? = nil,
         country: String? = nil
     ) {
+        self.init(
+            name: name,
+            email: email,
+            addressLine1: addressLine1,
+            addressLine2: nil,
+            city: city,
+            state: state,
+            postalCode: postalCode,
+            country: country
+        )
+    }
+
+    @objc(initWithName:email:addressLine1:addressLine2:city:state:postalCode:country:)
+    public init(
+        name: String,
+        email: String,
+        addressLine1: String? = nil,
+        addressLine2: String? = nil,
+        city: String? = nil,
+        state: String? = nil,
+        postalCode: String? = nil,
+        country: String? = nil
+    ) {
         self.name = name
         self.email = email
         self.addressLine1 = addressLine1
+        self.addressLine2 = addressLine2
         self.city = city
         self.state = state
         self.postalCode = postalCode
