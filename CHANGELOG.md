@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add address line 2 to `ContactAddress`.
 
+## [2.0.2] - 2026-05-18
+
+### Added
+
+- Add address line 2 to ContactAddress ([#25](https://github.com/ROKT/rokt-contracts-apple/pull/25))
+
+### Changed
+
+- Bump actions/create-github-app-token from 3.1.1 to 3.2.0 ([#24](https://github.com/ROKT/rokt-contracts-apple/pull/24))
+
 ## [2.0.1] - 2026-04-27
 
 ### Fixed
