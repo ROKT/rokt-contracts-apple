@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'RoktContracts'
-  s.version          = '2.0.2'
+  s.version          = '2.1.0'
   s.summary          = 'Shared protocols and types for the Rokt SDK ecosystem.'
   s.swift_version    = '5.9'
 

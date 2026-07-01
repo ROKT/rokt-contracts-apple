@@ -95,28 +95,48 @@ public final class PaymentSheetResult: NSObject, @unchecked Sendable {
     @objc public let transactionId: String?
     /// Set when ``outcome`` is ``PaymentSheetOutcome/failed``.
     @objc public let errorMessage: String?
+    /// `true` when ``outcome`` is ``PaymentSheetOutcome/failed`` and the failure is transient
+    /// (e.g. network error, request timeout, HTTP 429 or 5xx) so the host UI may keep the offer
+    /// and let the buyer retry. Always `false` for ``succeeded`` / ``canceled`` and for terminal
+    /// failures (validation, other 4xx, missing approval URL). Defaults to `false`.
+    @objc public let isRetryable: Bool
 
     @objc
-    public init(outcome: PaymentSheetOutcome, transactionId: String?, errorMessage: String?) {
+    public init(
+        outcome: PaymentSheetOutcome,
+        transactionId: String?,
+        errorMessage: String?,
+        isRetryable: Bool
+    ) {
         self.outcome = outcome
         self.transactionId = transactionId
         self.errorMessage = errorMessage
+        self.isRetryable = isRetryable
         super.init()
+    }
+
+    /// Backward-compatible initializer that defaults ``isRetryable`` to `false`.
+    @objc
+    public convenience init(outcome: PaymentSheetOutcome, transactionId: String?, errorMessage: String?) {
+        self.init(outcome: outcome, transactionId: transactionId, errorMessage: errorMessage, isRetryable: false)
     }
 
     /// Successful payment with a provider transaction identifier.
     public static func succeeded(transactionId: String) -> PaymentSheetResult {
-        PaymentSheetResult(outcome: .succeeded, transactionId: transactionId, errorMessage: nil)
+        PaymentSheetResult(outcome: .succeeded, transactionId: transactionId, errorMessage: nil, isRetryable: false)
     }
 
     /// Failed payment with a reason.
-    public static func failed(error: String) -> PaymentSheetResult {
-        PaymentSheetResult(outcome: .failed, transactionId: nil, errorMessage: error)
+    ///
+    /// - Parameter isRetryable: pass `true` for transient failures (network / timeout / HTTP 429 /
+    ///   5xx) so the host UI can keep the offer and allow a retry. Defaults to `false` (terminal).
+    public static func failed(error: String, isRetryable: Bool = false) -> PaymentSheetResult {
+        PaymentSheetResult(outcome: .failed, transactionId: nil, errorMessage: error, isRetryable: isRetryable)
     }
 
     /// User canceled the flow.
     public static var canceled: PaymentSheetResult {
-        PaymentSheetResult(outcome: .canceled, transactionId: nil, errorMessage: nil)
+        PaymentSheetResult(outcome: .canceled, transactionId: nil, errorMessage: nil, isRetryable: false)
     }
 }
 

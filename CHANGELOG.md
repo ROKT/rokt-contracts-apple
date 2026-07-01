@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-07-01
+
+### Added
+
+- Add `isRetryable` to `PaymentSheetResult` so transient payment failures (network / timeout / HTTP 429 / 5xx) can be surfaced as retryable, letting the host UI keep the offer for a retry. Backward-compatible: existing initializers and `failed(error:)` default it to `false`.
+
 ## [2.0.2] - 2026-05-18
 
 ### Added

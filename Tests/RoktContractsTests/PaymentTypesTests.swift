@@ -99,6 +99,39 @@ final class PaymentTypesTests: XCTestCase {
         XCTAssertNil(result.errorMessage)
     }
 
+    func testPaymentSheetResultFailedIsNotRetryableByDefault() {
+        let result = PaymentSheetResult.failed(error: "Card declined")
+        XCTAssertEqual(result.outcome, .failed)
+        XCTAssertFalse(result.isRetryable)
+    }
+
+    func testPaymentSheetResultFailedRetryable() {
+        let result = PaymentSheetResult.failed(error: "Service unavailable", isRetryable: true)
+        XCTAssertEqual(result.outcome, .failed)
+        XCTAssertEqual(result.errorMessage, "Service unavailable")
+        XCTAssertTrue(result.isRetryable)
+    }
+
+    func testPaymentSheetResultSucceededAndCanceledAreNotRetryable() {
+        XCTAssertFalse(PaymentSheetResult.succeeded(transactionId: "t").isRetryable)
+        XCTAssertFalse(PaymentSheetResult.canceled.isRetryable)
+    }
+
+    func testPaymentSheetResultBackwardCompatibleInitializerDefaultsRetryableFalse() {
+        let result = PaymentSheetResult(outcome: .failed, transactionId: nil, errorMessage: "e")
+        XCTAssertFalse(result.isRetryable)
+    }
+
+    func testPaymentSheetResultDesignatedInitializerCarriesRetryable() {
+        let result = PaymentSheetResult(
+            outcome: .failed,
+            transactionId: nil,
+            errorMessage: "e",
+            isRetryable: true
+        )
+        XCTAssertTrue(result.isRetryable)
+    }
+
     func testPaymentPreparation() {
         let prep = PaymentPreparation(
             clientSecret: "cs_123",
