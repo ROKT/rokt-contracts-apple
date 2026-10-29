@@ -27,16 +27,22 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          # A re-run after a failed CocoaPods push finds the release already created.
-          if gh release view "$VERSION" > /dev/null 2>&1; then
-            echo "Release $VERSION already exists; skipping."
-            exit 0
-          fi
-          gh release create "$VERSION" \
-            --title "$VERSION" \
+          gh release create "${{ steps.version.outputs.version }}" \
+            --title "${{ steps.version.outputs.version }}" \
             --generate-notes
+
+  publish-cocoapods:
+    # A separate job, so re-running it after a failed push does not repeat the GitHub release.
+    needs: publish
+    runs-on: macos-15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Publish to CocoaPods
         id: trunk-push
