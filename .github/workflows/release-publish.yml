@@ -36,6 +36,7 @@ jobs:
     # A separate job, so re-running it after a failed push does not repeat the GitHub release.
     needs: publish
     runs-on: macos-15
+    environment: release
     permissions:
       contents: read
     steps:
