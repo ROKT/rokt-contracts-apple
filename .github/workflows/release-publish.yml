@@ -30,6 +30,7 @@ jobs:
         run: |
           gh release create "${{ steps.version.outputs.version }}" \
             --title "${{ steps.version.outputs.version }}" \
+            --target "$GITHUB_SHA" \
             --generate-notes
 
   publish-cocoapods:
