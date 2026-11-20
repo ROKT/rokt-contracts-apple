@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-20
+
+### Added
+
+- Add RoktPrivacyControl for session-level privacy settings ([#38](https://github.com/ROKT/rokt-contracts-apple/pull/38))
+
+### Changed
+
+- Create the release tag on the released commit ([#39](https://github.com/ROKT/rokt-contracts-apple/pull/39))
+- Bump actions/checkout from 6.0.3 to 7.0.0 ([#31](https://github.com/ROKT/rokt-contracts-apple/pull/31))
+- Add swift ecosystem to Dependabot config ([#33](https://github.com/ROKT/rokt-contracts-apple/pull/33))
+- Remove Codecov ([#35](https://github.com/ROKT/rokt-contracts-apple/pull/35))
+- Drop the App token from Trunk Upgrade and publish to CocoaPods from release ([#37](https://github.com/ROKT/rokt-contracts-apple/pull/37))
+- Keep releases green when the CocoaPods trunk push fails ([#36](https://github.com/ROKT/rokt-contracts-apple/pull/36))
+- Add public repository confidentiality rules for agents ([#34](https://github.com/ROKT/rokt-contracts-apple/pull/34))
+- Remove PR template override to inherit org default ([#32](https://github.com/ROKT/rokt-contracts-apple/pull/32))
+- Bump actions/checkout from 6.0.2 to 6.0.3 ([#29](https://github.com/ROKT/rokt-contracts-apple/pull/29))
+- Bump trunk-io/trunk-action from 1.2.4 to 1.3.1 ([#28](https://github.com/ROKT/rokt-contracts-apple/pull/28))
+- Bump codecov/codecov-action from 6.0.0 to 6.0.1 ([#27](https://github.com/ROKT/rokt-contracts-apple/pull/27))
+
 ## [2.0.2] - 2026-05-18
 
 ### Added
